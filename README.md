@@ -11,7 +11,7 @@ Maxime MOINEAU
 ```
 
 clean install 
-mvn exec:java "-Dexec.args=3 4 5" > ouput
+mvn exec:java "-Dexec.args=5 2 10000" > ouput
 
 ```
 
