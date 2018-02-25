@@ -76,7 +76,7 @@ public class Projet2 {
         CR+=printProbas();
 
 
-        while(nombreIteration-->0) {
+        while(nombreIteration-->1) {
             chooseABeer();
             journal+=printPrices();
         }
@@ -102,7 +102,6 @@ public class Projet2 {
             str+=String.format("%.2f",b.getPrice())+" ";
         str+="\n";
         return str;
-
     }
 
     private String printProbas() {
@@ -137,6 +136,7 @@ public class Projet2 {
     }
 
     private Double computeProba(Beer beer) {
+        //mes probas sont pas inversement proportionnelle
         double totalprice = 0.;
         for (Beer b : beers.keySet()) {
             totalprice += b.getPrice();
@@ -152,7 +152,7 @@ public class Projet2 {
             if(noMoreBeer()) break;
             double chance = Math.random();
             for(Beer beer : beers.keySet()){
-                if(chance<beers.get(beer) && beer.getStock()>0) {//si on a une chance < a la proba de la biere et qu'elle est en stock
+                if(beers.get(beer)<=chance && beer.getStock()>0) {//c'est ici que la proba est inversement proportionnelle au prix
                     found=true;
                     beer.drink(getPriceIncrement());//on la boit en augmentant le prix
                     for(Beer beer_bis : beers.keySet()) {

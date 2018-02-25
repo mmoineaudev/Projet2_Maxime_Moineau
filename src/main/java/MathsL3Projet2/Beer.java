@@ -42,7 +42,7 @@ public class Beer {
     }
 
     public double getPrice(){
-        return price;
+        return this.stock>0?price:0;
     }
 
     public void decrementPrice(){
