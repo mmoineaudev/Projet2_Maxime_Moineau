@@ -17,6 +17,7 @@ package MathsL3Projet2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 /**
  * modéliser les achats aléatoires des étudiants.
@@ -31,7 +32,9 @@ import java.util.HashMap;
  */
 public class Projet2 {
 
-    private ArrayList<Beer> beers;
+    private final int nb_types;
+    private final int stock_initial;
+    private HashMap<Beer, Double> beers;
 
 
     /**
@@ -64,34 +67,103 @@ public class Projet2 {
      * @param nombreIteration
      */
     public Projet2(int nombreDeBieres, int stockInitial, int nombreIteration){
+        this.nb_types = nombreDeBieres;
+        this.stock_initial = stockInitial;
+        String CR = "";
+        String journal = "";
+        initSimulation();
+        CR+=printPrices();
+        CR+=printProbas();
 
-        initSimulation(nombreDeBieres, stockInitial);
+
+        while(nombreIteration-->0) {
+            chooseABeer();
+            journal+=printPrices();
+        }
+
+        CR+=printVentes();
+        CR+=journal;
+
+        System.out.println(CR);
 
     }
 
-    private void initSimulation(int nombreDeBieres, int stockInitial) {
-        beers = new ArrayList<>();
-        for(int i = 0; i<nombreDeBieres; i++){
-            double randomPrice = computeARandomPrice(nombreDeBieres, stockInitial);
-            System.out.println("randomPrice = " + randomPrice);
-            Beer beer = new Beer(randomPrice, stockInitial);
-            beers.add(beer);
+
+
+
+    private String printPrices() {
+        String str="";
+        for(Beer b : beers.keySet())
+            str+=String.format("%.2f",b.getPrice())+" ";
+        str+="\n";
+        return str;
+
+    }
+
+    private String printProbas() {
+        String str="";
+        for(Beer b : beers.keySet())
+            str+=String.format("%.3f",beers.get(b))+" ";
+        str+="\n";
+        return str;
+    }
+    private String printVentes() {
+        String str="";
+        for(Beer b : beers.keySet())
+            str+=b.getVentes()+" ";
+        str+="\n";
+        return str;
+    }
+
+    private void initSimulation() {
+        beers = new HashMap<>();
+        for(int i = 0; i<nb_types; i++){
+            double randomPrice = computeARandomPrice(nb_types, stock_initial);
+            Beer beer = new Beer(randomPrice, stock_initial);
+            beers.put(beer, 0.);
         }
+        initProbas();
+    }
+
+    private void initProbas() {
+        for(Beer beer : beers.keySet()) {
+            beers.put(beer, computeProba(beer));//on recalcule les probas
+        }
+    }
+
+    private Double computeProba(Beer beer) {
+        double totalprice = 0.;
+        for (Beer b : beers.keySet()) {
+            totalprice += b.getPrice();
+        }
+        double computedProba = beer.getPrice()/totalprice;
+        return (beer.getStock()==0)?0.: computedProba;
+
     }
 
     private void chooseABeer(){
-        int i=0,  min = 0; double minPrice = -1;
-        for(i = 0 ; i < beers.size() ; i++ ){
-            double actualPrice = beers.get(i).getPrice();
-            if((minPrice==-1 || minPrice>actualPrice) && beers.get(i).getStock()>0){
-                min = i;
-                minPrice = actualPrice;
+       boolean found = false;
+        while(!found){
+            double chance = Math.random();
+            for(Beer beer : beers.keySet()){
+                if(chance<beers.get(beer) && beer.getStock()>0) {//si on a une chance < a la proba de la biere et qu'elle est en stock
+                    found=true;
+                    beer.drink(getPriceIncrement());//on la boit en augmentant le prix
+                    for(Beer beer_bis : beers.keySet()) {
+                        if(!beer.equals(beer_bis)) beer_bis.decrementPrice();//en decrementant le prix des autres
+                        beers.put(beer_bis, computeProba(beer_bis));//on recalcule les probas
+                    }
+                    break;//on quite la boucle
+                }
             }
         }
-        //on prends la moins cher
-        beers.get(i).drink();
-
     }
+
+    private double getPriceIncrement() {
+        double inc = 5.*(beers.size()-1);
+        return inc/100.;
+    }
+
 
     /**
      * compris entre (stockInitial×nombreDeBieres/20) euros et (stockInitial×nombreDeBieres/5)
@@ -100,17 +172,12 @@ public class Projet2 {
      */
     private double computeARandomPrice(int nombreDeBieres, int stockInitial){
 
-        String price = (Math.random()>0.5)?"0":"5";//pour etre sur que c'est multiple de 5
-        double a = stockInitial*nombreDeBieres/20;
-        double b = stockInitial*nombreDeBieres/5;
-        double realPrice = a;
-        while(realPrice<=a || realPrice>b){
-
-            price = String.format("%.2f", (b)*Math.random()+a);
-            realPrice = new Double(price.replace(",", "."));
-
-        }
-        System.out.println("realPrice = " + realPrice);
-        return realPrice;
+        int a = stockInitial*nombreDeBieres/20 * 100;
+        int b = stockInitial*nombreDeBieres/5 * 100;
+        Random r = new Random();
+        int newval = r.nextInt(b);
+        while(newval%5>0||newval<a||newval==0)
+            newval=r.nextInt(b);
+        return newval/100.;
     }
 }

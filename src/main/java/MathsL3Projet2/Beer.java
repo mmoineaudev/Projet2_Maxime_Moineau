@@ -3,15 +3,18 @@ package MathsL3Projet2;
 public class Beer {
     //https://www.youtube.com/watch?v=e7kJRGPgvRQ
     private double price;
-    private double stock;
+    private int stock;
     private int ventes = 0;
+    private final double checksum;
+    private double CA;
 
-    public Beer(double price, double stock) {
+    public Beer(double price, int stock) {
         this.price = price;
         this.stock = stock;
+        this.checksum = Math.random();
     }
 
-    public double getStock() {
+    public int getStock() {
         return stock;
     }
 
@@ -25,7 +28,6 @@ public class Beer {
      * @param priceIncrement
      */
     public void drink(double priceIncrement){
-        System.out.println("glou");
         if(stock>0) {
             stock--;
             ventes++;
@@ -38,6 +40,11 @@ public class Beer {
     }
 
     public void decrementPrice(){
-        if(this.price>0.) this.price -= 0.05;
+        if(this.price>=0.05) this.price -= 0.05;
+    }
+
+
+    public boolean equals(Beer o) {
+        return this.checksum==o.checksum;
     }
 }
