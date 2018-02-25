@@ -83,12 +83,17 @@ public class Projet2 {
 
         CR+=printVentes();
         CR+=journal;
-
+        CR+=printCA();
         System.out.println(CR);
 
     }
 
-
+    private String printCA() {
+        double CA = 0.;
+        for(Beer b : beers.keySet())
+            CA += b.getCA();
+        return String.format("%.2f",CA) +" \n";
+    }
 
 
     private String printPrices() {
@@ -144,6 +149,7 @@ public class Projet2 {
     private void chooseABeer(){
        boolean found = false;
         while(!found){
+            if(noMoreBeer()) break;
             double chance = Math.random();
             for(Beer beer : beers.keySet()){
                 if(chance<beers.get(beer) && beer.getStock()>0) {//si on a une chance < a la proba de la biere et qu'elle est en stock
@@ -156,7 +162,14 @@ public class Projet2 {
                     break;//on quite la boucle
                 }
             }
+
         }
+    }
+
+    private boolean noMoreBeer() {
+        for(Beer b : beers.keySet())
+            if(b.getStock()>0) return false;
+        return true;
     }
 
     private double getPriceIncrement() {

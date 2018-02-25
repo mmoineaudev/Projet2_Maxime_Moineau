@@ -6,6 +6,8 @@ public class Beer {
     private int stock;
     private int ventes = 0;
     private final double checksum;
+
+
     private double CA;
 
     public Beer(double price, int stock) {
@@ -22,6 +24,9 @@ public class Beer {
         return ventes;
     }
 
+    public double getCA() {
+        return CA;
+    }
     /**
      * chaque fois qu’une bière est vendue, son prix augmente de 5 × (b − 1) centimes
      * (quel que soit le nombre de types de bières encore disponibles)
@@ -31,6 +36,7 @@ public class Beer {
         if(stock>0) {
             stock--;
             ventes++;
+            CA+=price;
             price += priceIncrement;
         }
     }
