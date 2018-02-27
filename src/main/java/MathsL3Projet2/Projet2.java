@@ -159,7 +159,7 @@ public class Projet2 {
         Beer beer = null;
         for(Beer b : beers.keySet()){
             if(b.getStock()>0){
-                if(beers.get(b)<=minProb) {
+                if(beers.get(b)<=minProb) {//pour l'inversement proportionnel
                     minProb=beers.get(b);
                     beer = b ;
                 }
