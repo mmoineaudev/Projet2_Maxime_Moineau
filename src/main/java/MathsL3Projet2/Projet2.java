@@ -15,7 +15,6 @@ package MathsL3Projet2;
  */
 //consigne
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -71,7 +70,7 @@ public class Projet2 {
         this.stock_initial = stockInitial;
         String CR = "";
         String journal = "";
-        initSimulation();
+        double depenseDeDepart = initSimulation();
         CR+=printPrices();
         CR+=printProbas();
 
@@ -83,13 +82,13 @@ public class Projet2 {
 
         CR+=printVentes();
         CR+=journal;
-        CR+=printCA();
+        CR+= printProfit(depenseDeDepart);
         System.out.println(CR);
 
     }
 
-    private String printCA() {
-        double CA = 0.;
+    private String printProfit(double depenseDeDepart) {
+        double CA = depenseDeDepart;
         for(Beer b : beers.keySet())
             CA += b.getCA();
         return String.format("%.2f",CA) +" \n";
@@ -119,12 +118,14 @@ public class Projet2 {
         return str;
     }
 
-    private void initSimulation() {
+    private double initSimulation() {
         beers = new HashMap<>();
+        double cout = 0;
         for(int i = 0; i<nb_types; i++){
             double randomPrice = computeARandomPrice(nb_types, stock_initial);
             Beer beer = new Beer(randomPrice, stock_initial);
             beers.put(beer, 0.);
+            cout-=beer.getPrice()*beer.getStock();//on deduit le prix des bieres de depart du profit de l'association
         }
         initProbas();
     }
