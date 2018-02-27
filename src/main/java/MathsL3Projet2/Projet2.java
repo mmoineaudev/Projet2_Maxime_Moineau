@@ -166,7 +166,7 @@ public class Projet2 {
             }
         }
         if(beer!=null) {
-            beer.drink(getPriceIncrement()+0.05);
+            beer.drink(getPriceIncrement()+0.05);//vu qu'on a decrementé tout le monde
             for(Beer b2 : beers.keySet()) {
                 b2.decrementPrice();
                 beers.put(b2, computeProba(b2));
