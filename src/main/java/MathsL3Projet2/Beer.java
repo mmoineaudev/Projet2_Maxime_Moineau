@@ -8,7 +8,7 @@ public class Beer {
     private final double checksum;
 
 
-    private double CA;
+    private double sommeDesVentes;
 
     public Beer(double price, int stock) {
         this.price = price;
@@ -24,8 +24,8 @@ public class Beer {
         return ventes;
     }
 
-    public double getCA() {
-        return CA;
+    public double getSommeDesVentes() {
+        return sommeDesVentes;
     }
     /**
      * chaque fois qu’une bière est vendue, son prix augmente de 5 × (b − 1) centimes
@@ -36,13 +36,13 @@ public class Beer {
         if(stock>0) {
             stock--;
             ventes++;
-            CA+=price;
+            sommeDesVentes +=price;
             price += priceIncrement;
         }
     }
 
     public double getPrice(){
-        return this.stock>0?price:0;
+        return this.stock>0 ? price:0;
     }
 
     public void decrementPrice(){

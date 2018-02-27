@@ -74,11 +74,11 @@ public class Projet2 {
         CR+=printPrices();
         CR+=printProbas();
 
-
         while(nombreIteration-->1) {
-            chooseABeer();
             journal+=printPrices();
+            chooseABeer();
         }
+        journal+=printPrices();
 
         CR+=printVentes();
         CR+=journal;
@@ -90,7 +90,7 @@ public class Projet2 {
     private String printProfit(double depenseDeDepart) {
         double CA = depenseDeDepart;
         for(Beer b : beers.keySet())
-            CA += b.getCA();
+            CA += b.getSommeDesVentes();
         return String.format("%.2f",CA) +" \n";
     }
 
@@ -128,6 +128,7 @@ public class Projet2 {
             cout-=beer.getPrice()*beer.getStock();//on deduit le prix des bieres de depart du profit de l'association
         }
         initProbas();
+        return cout;
     }
 
     private void initProbas() {
@@ -148,22 +149,28 @@ public class Projet2 {
     }
 
     private void chooseABeer(){
-       boolean found = false;
-        while(!found){
-            if(noMoreBeer()) break;
-            double chance = Math.random();
-            for(Beer beer : beers.keySet()){
-                if(beers.get(beer)<=chance && beer.getStock()>0) {//c'est ici que la proba est inversement proportionnelle au prix
-                    found=true;
-                    beer.drink(getPriceIncrement());//on la boit en augmentant le prix
-                    for(Beer beer_bis : beers.keySet()) {
-                        if(!beer.equals(beer_bis)) beer_bis.decrementPrice();//en decrementant le prix des autres
-                        beers.put(beer_bis, computeProba(beer_bis));//on recalcule les probas
-                    }
-                    break;//on quite la boucle
+       if(noMoreBeer()) return;
+       else drinkCheapestBeer();
+    }
+
+
+    private void drinkCheapestBeer() {
+        double minProb = 1.;
+        Beer beer = null;
+        for(Beer b : beers.keySet()){
+            if(b.getStock()>0){
+                if(beers.get(b)<=minProb) {
+                    minProb=beers.get(b);
+                    beer = b ;
                 }
             }
-
+        }
+        if(beer!=null) {
+            beer.drink(getPriceIncrement()+0.05);
+            for(Beer b2 : beers.keySet()) {
+                b2.decrementPrice();
+                beers.put(b2, computeProba(b2));
+            }
         }
     }
 

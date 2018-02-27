@@ -10,15 +10,11 @@ Maxime MOINEAU
 
 ```
 
-clean install 
-mvn exec:java "-Dexec.args=5 2 10000" > ouput
+mvn clean install exec:java -q "-Dexec.args=5 2 100" > output
+
 
 ```
 
-* archive jar
+# Problème de format 
 
-```
-
-java -jar 
-
-```
+Pour 5 2 100 le programme rends bien 104 lignes (ligne de prixs, de probas, de nombre de ventes + 100 itérations + profit) mais ne passe pas le test de format...
